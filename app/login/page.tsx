@@ -140,7 +140,7 @@ return (
         </Link>
 
         <div className="text-center text-gray-600 dark:text-white/70">
-          Don't have an account?{" "}
+          {"Don't have an account?"}{" "}
           <Link href="/register" className="text-purple-500 hover:text-purple-400 transition-colors duration-300 font-medium">
             Sign up for free
           </Link>

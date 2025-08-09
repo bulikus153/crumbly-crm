@@ -1,34 +1,58 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import { useEffect, useState } from "react";
 
-const MOBILE_BREAKPOINT = 768
-
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
-
-  React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    const onChange = (event: MediaQueryListEvent) => {
-      setIsMobile(event.matches)
+/**
+ * Хук визначає, чи поточна ширина вікна менша за breakpoint.
+ * SSR-safe, з підтримкою Safari < 14.
+ *
+ * @param breakpoint - гранична ширина в px (за замовчуванням 768)
+ * @returns boolean
+ */
+export function useIsMobile(breakpoint = 768): boolean {
+  const getInitial = () => {
+    if (typeof window === "undefined") return false;
+    if ("matchMedia" in window) {
+      return window.matchMedia(`(max-width: ${breakpoint - 1}px)`).matches;
     }
-    if (typeof mql.addEventListener === "function") {
-      mql.addEventListener("change", onChange)
-    } else {
-      // Safari < 14 support
-      // @ts-ignore - addListener exists on older browsers
-      mql.addListener(onChange)
-    }
-    setIsMobile(mql.matches)
-    return () => {
-      if (typeof mql.removeEventListener === "function") {
-        mql.removeEventListener("change", onChange)
+    return window.innerWidth < breakpoint;
+  };
+
+  const [isMobile, setIsMobile] = useState<boolean>(getInitial);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if ("matchMedia" in window) {
+      const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+      const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+
+      if (typeof mql.addEventListener === "function") {
+        mql.addEventListener("change", onChange);
       } else {
-        // @ts-ignore - removeListener exists on older browsers
-        mql.removeListener(onChange)
+        // Safari < 14
+        // @ts-ignore
+        mql.addListener(onChange);
       }
-    }
-  }, [])
 
-  return !!isMobile
+      // синхронізація на старті
+      setIsMobile(mql.matches);
+
+      return () => {
+        if (typeof mql.removeEventListener === "function") {
+          mql.removeEventListener("change", onChange);
+        } else {
+          // @ts-ignore
+          mql.removeListener(onChange);
+        }
+      };
+    } else {
+      const onResize = () => setIsMobile(window.innerWidth < breakpoint);
+      window.addEventListener("resize", onResize);
+      onResize();
+      return () => window.removeEventListener("resize", onResize);
+    }
+  }, [breakpoint]);
+
+  return isMobile;
 }

@@ -336,7 +336,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                   
-                  <p className="text-gray-700 dark:text-white/80 leading-relaxed italic">"{testimonial.content}"</p>
+                  <p className="text-gray-700 dark:text-white/80 leading-relaxed italic">&ldquo;{testimonial.content}&rdquo;</p>
                   
                   <div className="flex items-center justify-between">
                     <div className="flex space-x-1">

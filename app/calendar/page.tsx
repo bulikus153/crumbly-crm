@@ -152,7 +152,7 @@ return (
             {/* Today's Schedule */}
             <Card className="backdrop-blur-md bg-card/50 border-border/50">
               <CardHeader>
-                <CardTitle className="text-foreground">Today's Schedule</CardTitle>
+                <CardTitle className="text-foreground">{"Today's Schedule"}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {meetings.map((meeting) => (

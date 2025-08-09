@@ -40,7 +40,7 @@ export default async function DashboardPage() {
           <div className="space-y-4">
             <div>
               <h1 className="text-3xl font-bold text-foreground">Welcome back, {user?.name?.split(' ')[0] || 'User'}!</h1>
-              <p className="text-muted-foreground">Here's your business summary for today.</p>
+              <p className="text-muted-foreground">{"Here's your business summary for today."}</p>
             </div>
 
             {/* AI Suggestions */}
